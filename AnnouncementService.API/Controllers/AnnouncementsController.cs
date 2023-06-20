@@ -55,13 +55,14 @@ public class AnnouncementsController : ControllerBase
         return Ok(announcement);
     }
 
-    [HttpGet("similar-to/{id}")]
+        [HttpGet("similar-to/{id}")]
     public async Task<IActionResult> GetSimilar(Guid id, [FromQuery] int length)
     {
-        var existingAnnouncement = await _repo.GetById(id);
-        if (existingAnnouncement is null)
+        var announcement = await _repo.GetById(id);
+        if (announcement is null)
             return BadRequest();
-        var listOfSimilar = await _repo.GetSimilar(id, length);
+        var queryText = $"{announcement.Title} {announcement.Description}";
+        var listOfSimilar = await _repo.GetSimilar(queryText, length);
         return Ok(listOfSimilar);
     }
 }

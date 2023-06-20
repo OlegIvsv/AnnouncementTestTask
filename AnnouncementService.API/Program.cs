@@ -24,6 +24,11 @@ var app = builder.Build();
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+    // Create search index if it does not exist yet
+    new RedisAnnouncementSearchSetup(
+        app.Services.GetService<IConnectionMultiplexer>()!,
+        app.Services.GetService<ILogger<RedisAnnouncementSearchSetup>>()!)
+        .Setup();
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();

@@ -9,5 +9,5 @@ public interface IAnnouncementRepo
     public Task<bool> Delete(Guid id);
     public Task Update(AnnouncementModel announcement);
     public Task Add(AnnouncementModel announcement);
-    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int length);
+    public Task<IList<AnnouncementModel>> GetSimilar(string queryText, int length);
 }

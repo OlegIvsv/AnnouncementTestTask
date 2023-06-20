@@ -1,5 +1,7 @@
 ﻿using Announcement.App.Entities;
 using FluentResults;
+using NRedisStack.RedisStackCommands;
+using NRedisStack.Search;
 using StackExchange.Redis;
 
 namespace Announcement.Infrastructure.Database;
@@ -7,6 +9,7 @@ namespace Announcement.Infrastructure.Database;
 public class RedisAnnouncementRepo : IAnnouncementRepo
 {
     private readonly IConnectionMultiplexer _redis;
+    public const string KeyPrefix = "announcement";
 
     public RedisAnnouncementRepo(IConnectionMultiplexer connectionMultiplexer)
     {
@@ -45,12 +48,19 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         await db.HashSetAsync(KeyFor(announcement.Id), entries);
     }
 
-    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int length)
+    public async Task<IList<AnnouncementModel>> GetSimilar(string queryText, int length)
     {
-        throw new NotImplementedException();
+        var db = _redis.GetDatabase();
+        var query = new Query(queryText).Limit(0, length);
+        
+        var searchResult = await db.FT().SearchAsync(RedisAnnouncementSearchSetup.SearchIndexName, query);
+
+        return searchResult.Documents
+            .Select(DocumentToAnnouncement)
+            .ToList();
     }
 
-    private string KeyFor(Guid id) => $"announcement:{id}";
+    private string KeyFor(Guid id) => $"{KeyPrefix}:{id}";
 
     private HashEntry[] AnnouncementToHash(AnnouncementModel announcement)
     {
@@ -75,6 +85,17 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
             Title = title,
             Description = description,
             DateAdded = dateAdded
+        };
+    }
+
+    private AnnouncementModel DocumentToAnnouncement(Document document)
+    {
+        return new ()
+        {
+            Id = Guid.Parse(document["id"]),
+            Title = document["title"],
+            Description = document["author"],
+            DateAdded = DateTime.Parse(document["dateAdded"])
         };
     }
 }
