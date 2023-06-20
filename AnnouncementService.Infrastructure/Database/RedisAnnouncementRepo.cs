@@ -28,14 +28,14 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         return await db.KeyDeleteAsync(key);
     }
 
-    public async void Update(Announcement announcement)
+    public async Task Update(Announcement announcement)
     {
         // The action is the same in case of redis. In case of other DBs
         // it's probably going to be different.
-        Add(announcement);
+        await Add(announcement);
     }
 
-    public async void Add(Announcement announcement)
+    public async Task Add(Announcement announcement)
     {
         if (announcement is null) 
             throw new NullReferenceException();
