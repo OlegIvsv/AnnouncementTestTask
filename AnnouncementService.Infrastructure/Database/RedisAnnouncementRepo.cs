@@ -1,32 +1,80 @@
 ﻿using AnnouncementService.App.Entities;
 using FluentResults;
+using StackExchange.Redis;
 
 namespace AnnouncementService.Infrastructure.Database;
 
 public class RedisAnnouncementRepo : IAnnouncementRepo
 {
-    public Task<Result<Announcement>> GetById(Guid id)
+    private readonly IConnectionMultiplexer _redis;
+
+    public RedisAnnouncementRepo(IConnectionMultiplexer connectionMultiplexer)
     {
-        throw new NotImplementedException();
+        _redis = connectionMultiplexer;
+    }
+    
+    public async Task<Result<Announcement>> GetById(Guid id)
+    {
+        var db = _redis.GetDatabase();
+        var key = KeyFor(id);
+        var bookHash = await db.HashGetAllAsync(key);
+        return HashToAnnouncement(bookHash);
     }
 
-    public Task<bool> Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var db = _redis.GetDatabase();
+        var key = KeyFor(id);
+        return await db.KeyDeleteAsync(key);
     }
 
-    public Task<Result<Announcement>> Update(Announcement announcement)
+    public async void Update(Announcement announcement)
     {
-        throw new NotImplementedException();
+        // The action is the same in case of redis. In case of other DBs
+        // it's probably going to be different.
+        Add(announcement);
     }
 
-    public Task<Result<Announcement>> Add(Announcement announcement)
+    public async void Add(Announcement announcement)
     {
-        throw new NotImplementedException();
+        if (announcement is null) 
+            throw new NullReferenceException();
+
+        var db = _redis.GetDatabase();
+        var entries = AnnouncementToHash(announcement);
+        await db.HashSetAsync(KeyFor(announcement.Id), entries);
     }
 
     public Task<Result<IList<Announcement>>> GetSimilar(Guid id, int n)
     {
         throw new NotImplementedException();
+    }
+
+    private string KeyFor(Guid id) => $"announcement:{id}";
+
+    private HashEntry[] AnnouncementToHash(Announcement announcement)
+    {
+        return new[]
+        {
+            new HashEntry("id", announcement.Id.ToString()),
+            new HashEntry("title", announcement.Title),
+            new HashEntry("description", announcement.Description),
+            new HashEntry("dateAdded", announcement.DateAdded.ToString())
+        };
+    }
+
+    public Announcement HashToAnnouncement(HashEntry[] hashEntries)
+    {
+        var id = Guid.Parse(hashEntries.First(e => e.Name == "id").Value!);
+        string title = hashEntries.First(e => e.Name == "title").Value!;
+        string description = hashEntries.First(e => e.Name == "description").Value!;
+        var dateAdded = DateTime.Parse(hashEntries.First(e => e.Name == "dateAdded").Value!);
+        return new()
+        {
+            Id = id,
+            Title = title,
+            Description = description,
+            DateAdded = dateAdded
+        };
     }
 }

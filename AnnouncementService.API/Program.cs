@@ -1,3 +1,4 @@
+using AnnouncementService.Infrastructure.Database;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
         string redisConnString = builder.Configuration.GetConnectionString("RedisConnection")!;
         return ConnectionMultiplexer.Connect(redisConnString);
     });
-    builder.Services.AddScoped<IBookRepo, RedisBookRepo>();
+    builder.Services.AddScoped<IAnnouncementRepo, RedisAnnouncementRepo>();
 }
 
 var app = builder.Build();
