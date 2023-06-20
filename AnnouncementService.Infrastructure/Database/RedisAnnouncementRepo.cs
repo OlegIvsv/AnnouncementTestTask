@@ -51,7 +51,12 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
     public async Task<IList<AnnouncementModel>> GetSimilar(string queryText, int length)
     {
         var db = _redis.GetDatabase();
-        var query = new Query(queryText).Limit(0, length);
+        var queryCommand = string.Join(
+            " | ", 
+            queryText.Split()
+                .Where(word => !string.IsNullOrWhiteSpace(word))
+                .ToArray());
+        var query = new Query(queryCommand).Limit(0, length);
         
         var searchResult = await db.FT().SearchAsync(RedisAnnouncementSearchSetup.SearchIndexName, query);
 
@@ -94,7 +99,7 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         {
             Id = Guid.Parse(document["id"]),
             Title = document["title"],
-            Description = document["author"],
+            Description = document["description"],
             DateAdded = DateTime.Parse(document["dateAdded"])
         };
     }
