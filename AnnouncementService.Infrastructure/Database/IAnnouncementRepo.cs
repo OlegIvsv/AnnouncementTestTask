@@ -1,13 +1,13 @@
-﻿using AnnouncementService.App.Entities;
+﻿using Announcement.App.Entities;
 using FluentResults;
 
-namespace AnnouncementService.Infrastructure.Database;
+namespace Announcement.Infrastructure.Database;
 
 public interface IAnnouncementRepo
 {
-    public Task<Result<Announcement>> GetById(Guid id);
+    public Task<Result<AnnouncementModel>> GetById(Guid id);
     public Task<bool> Delete(Guid id);
-    public Task Update(Announcement announcement);
-    public Task Add(Announcement announcement);
-    public Task<Result<IList<Announcement>>> GetSimilar(Guid id, int n);
+    public Task Update(AnnouncementModel announcement);
+    public Task Add(AnnouncementModel announcement);
+    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int n);
 }

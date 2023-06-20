@@ -1,4 +1,5 @@
-using AnnouncementService.Infrastructure.Database;
+using Announcement.Infrastructure.Database;
+using Announcement.Infrastructure.DateAndTime;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
         return ConnectionMultiplexer.Connect(redisConnString);
     });
     builder.Services.AddScoped<IAnnouncementRepo, RedisAnnouncementRepo>();
+    builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
 }
 
 var app = builder.Build();

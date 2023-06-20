@@ -1,6 +1,6 @@
-﻿using AnnouncementService.App.Entities;
+﻿using Announcement.App.Entities;
 
-namespace AnnouncementService.API.Contracts;
+namespace Announcement.API.Contracts;
 
 public class AnnouncementResponse
 {
@@ -9,7 +9,7 @@ public class AnnouncementResponse
     public string Description { get; init; }
     public DateTime DateAdded { get; init; }
 
-    public static AnnouncementResponse FromModel(Announcement announcement)
+    public static AnnouncementResponse FromModel(AnnouncementModel announcement)
     {
         return new()
         {

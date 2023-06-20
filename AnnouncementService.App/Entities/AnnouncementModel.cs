@@ -1,6 +1,6 @@
-﻿namespace AnnouncementService.App.Entities;
+﻿namespace Announcement.App.Entities;
 
-public class Announcement   
+public class AnnouncementModel   
 {
     public Guid Id { get; set; }
     public string Title { get; init; }

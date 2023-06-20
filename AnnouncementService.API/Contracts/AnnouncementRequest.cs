@@ -1,22 +1,22 @@
-﻿using AnnouncementService.App.Entities;
+﻿using Announcement.Infrastructure.DateAndTime;
 
-namespace AnnouncementService.API.Contracts;
+namespace Announcement.API.Contracts;
 
 public class AnnouncementRequest
 {
-    public Guid Id { get; init; }
+    public Guid? Id { get; init; }
     public string Title { get; init; }
     public string Description { get; init; }
-    public DateTime DateAdded { get; init; }
+    public DateTime? DateAdded { get; init; }
 
-    public static Announcement ToModel(AnnouncementRequest announcement)
+    public static App.Entities.AnnouncementModel ToModel(AnnouncementRequest announcement, IDateTimeProvider datetime)
     {
         return new()
         {
-            Id = announcement.Id,
+            Id = announcement.Id ?? Guid.NewGuid(),
             Title = announcement.Title,
             Description = announcement.Description,
-            DateAdded = announcement.DateAdded
+            DateAdded = datetime.Now()
         };
     }
 }

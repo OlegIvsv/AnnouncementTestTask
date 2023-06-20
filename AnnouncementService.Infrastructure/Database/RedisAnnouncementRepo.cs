@@ -1,8 +1,8 @@
-﻿using AnnouncementService.App.Entities;
+﻿using Announcement.App.Entities;
 using FluentResults;
 using StackExchange.Redis;
 
-namespace AnnouncementService.Infrastructure.Database;
+namespace Announcement.Infrastructure.Database;
 
 public class RedisAnnouncementRepo : IAnnouncementRepo
 {
@@ -13,7 +13,7 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         _redis = connectionMultiplexer;
     }
     
-    public async Task<Result<Announcement>> GetById(Guid id)
+    public async Task<Result<AnnouncementModel>> GetById(Guid id)
     {
         var db = _redis.GetDatabase();
         var key = KeyFor(id);
@@ -28,14 +28,14 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         return await db.KeyDeleteAsync(key);
     }
 
-    public async Task Update(Announcement announcement)
+    public async Task Update(AnnouncementModel announcement)
     {
         // The action is the same in case of redis. In case of other DBs
         // it's probably going to be different.
         await Add(announcement);
     }
 
-    public async Task Add(Announcement announcement)
+    public async Task Add(AnnouncementModel announcement)
     {
         if (announcement is null) 
             throw new NullReferenceException();
@@ -45,14 +45,14 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         await db.HashSetAsync(KeyFor(announcement.Id), entries);
     }
 
-    public Task<Result<IList<Announcement>>> GetSimilar(Guid id, int n)
+    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int n)
     {
         throw new NotImplementedException();
     }
 
     private string KeyFor(Guid id) => $"announcement:{id}";
 
-    private HashEntry[] AnnouncementToHash(Announcement announcement)
+    private HashEntry[] AnnouncementToHash(AnnouncementModel announcement)
     {
         return new[]
         {
@@ -63,7 +63,7 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         };
     }
 
-    public Announcement HashToAnnouncement(HashEntry[] hashEntries)
+    public AnnouncementModel HashToAnnouncement(HashEntry[] hashEntries)
     {
         var id = Guid.Parse(hashEntries.First(e => e.Name == "id").Value!);
         string title = hashEntries.First(e => e.Name == "title").Value!;

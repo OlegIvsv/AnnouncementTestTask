@@ -1,25 +1,29 @@
-using AnnouncementService.API.Contracts;
-using AnnouncementService.App.Entities;
-using AnnouncementService.Infrastructure.Database;
+using Announcement.API.Contracts;
+using Announcement.Infrastructure.Database;
+using Announcement.Infrastructure.DateAndTime;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AnnouncementService.API.Controllers;
+namespace Announcement.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class AnnouncementsController : ControllerBase
 {
     private readonly IAnnouncementRepo _repo;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public AnnouncementsController(IAnnouncementRepo announcementRepo)
+
+    public AnnouncementsController(IAnnouncementRepo announcementRepo, IDateTimeProvider dateTimeProvider)
     {
         _repo = announcementRepo;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     [HttpPost]
     public async Task<IActionResult> AddAnnouncement([FromBody] AnnouncementRequest request)
     {
-        var announcement = AnnouncementRequest.ToModel(request);
+        var announcement = AnnouncementRequest.ToModel(request, _dateTimeProvider);
+        
         _repo.Add(announcement);
         return Ok();
     }
@@ -37,10 +41,10 @@ public class AnnouncementsController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateAnnouncement([FromBody] AnnouncementRequest request)
     {
-        var existingAnnouncement = await _repo.GetById(request.Id);
+        var existingAnnouncement = await _repo.GetById(request.Id ??);
         if (existingAnnouncement is null)
             return NotFound();
-        var announcement = AnnouncementRequest.ToModel(request);
+        var announcement = AnnouncementRequest.ToModel(request, _dateTimeProvider);
         await _repo.Update(announcement);
         return Ok();
     }
