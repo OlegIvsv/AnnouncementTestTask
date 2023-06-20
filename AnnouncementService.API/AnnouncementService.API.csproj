@@ -10,6 +10,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
         <PackageReference Include="NRedisStack" Version="0.7.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
+        <PackageReference Include="Serilog.Expressions" Version="3.4.2-dev-00120" />
+        <PackageReference Include="Serilog.Extensions.Logging.File" Version="3.0.1-dev-00077" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
