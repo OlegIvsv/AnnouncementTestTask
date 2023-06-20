@@ -20,31 +20,28 @@ public class AnnouncementsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAnnouncement([FromBody] AnnouncementRequest request)
+    public async Task<IActionResult> AddAnnouncement([FromBody] AddAnnouncementRequest request)
     {
-        var announcement = AnnouncementRequest.ToModel(request, _dateTimeProvider);
-        
-        _repo.Add(announcement);
-        return Ok();
+        var announcement = AddAnnouncementRequest.ToModel(request, _dateTimeProvider);
+        await _repo.Add(announcement);
+        return CreatedAtAction(nameof(AddAnnouncement), announcement);
     }
     
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> RemoveAnnouncement(Guid id)
     {
-        var announcement = await _repo.GetById(id);
-        if (announcement is null)
-            return NotFound();
-        await _repo.Delete(id);
-        return Ok();
+        if(await _repo.Delete(id))
+            return Ok();
+        return NotFound();
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAnnouncement([FromBody] AnnouncementRequest request)
+    public async Task<IActionResult> UpdateAnnouncement([FromBody] UpdateAnnouncementRequest request)
     {
-        var existingAnnouncement = await _repo.GetById(request.Id ??);
+        var announcement = UpdateAnnouncementRequest.ToModel(request, _dateTimeProvider);
+        var existingAnnouncement = await _repo.GetById(announcement.Id);
         if (existingAnnouncement is null)
             return NotFound();
-        var announcement = AnnouncementRequest.ToModel(request, _dateTimeProvider);
         await _repo.Update(announcement);
         return Ok();
     }

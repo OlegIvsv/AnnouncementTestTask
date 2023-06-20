@@ -13,12 +13,14 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         _redis = connectionMultiplexer;
     }
     
-    public async Task<Result<AnnouncementModel>> GetById(Guid id)
+    public async Task<AnnouncementModel?> GetById(Guid id)
     {
         var db = _redis.GetDatabase();
         var key = KeyFor(id);
-        var bookHash = await db.HashGetAllAsync(key);
-        return HashToAnnouncement(bookHash);
+        var announcementHash = await db.HashGetAllAsync(key);
+        if (announcementHash.Length == 0)
+            return null;
+        return HashToAnnouncement(announcementHash);
     }
 
     public async Task<bool> Delete(Guid id)
@@ -30,8 +32,6 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
 
     public async Task Update(AnnouncementModel announcement)
     {
-        // The action is the same in case of redis. In case of other DBs
-        // it's probably going to be different.
         await Add(announcement);
     }
 
@@ -45,7 +45,7 @@ public class RedisAnnouncementRepo : IAnnouncementRepo
         await db.HashSetAsync(KeyFor(announcement.Id), entries);
     }
 
-    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int n)
+    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int length)
     {
         throw new NotImplementedException();
     }

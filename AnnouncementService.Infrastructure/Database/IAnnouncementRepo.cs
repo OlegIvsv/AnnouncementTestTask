@@ -5,9 +5,9 @@ namespace Announcement.Infrastructure.Database;
 
 public interface IAnnouncementRepo
 {
-    public Task<Result<AnnouncementModel>> GetById(Guid id);
+    public Task<AnnouncementModel?> GetById(Guid id);
     public Task<bool> Delete(Guid id);
     public Task Update(AnnouncementModel announcement);
     public Task Add(AnnouncementModel announcement);
-    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int n);
+    public Task<Result<IList<AnnouncementModel>>> GetSimilar(Guid id, int length);
 }
