@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Announcement.API.Controllers;
+namespace AnnouncementService.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -19,19 +19,19 @@ public class AnnouncementsController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> RemoveAnnouncement()
+    public async Task<IActionResult> UpdateAnnouncement()
     {
 
     }
 
     [HttpGet("{id:Guid}")]
-    public async Task<IActionResult> RemoveAnnouncement(Guid id)
+    public async Task<IActionResult> GetAnnouncementById(Guid id)
     {
 
     }
 
     [HttpGet("similar-to/{id}")]
-    public async Task<IActionResult> SimilarTo(Guid id, [FromQuery] int length)
+    public async Task<IActionResult> GetSimilar(Guid id, [FromQuery] int length)
     {
         
     }

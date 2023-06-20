@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Announcement.API", "Announcement.API\Announcement.API.csproj", "{8C1F7722-32CC-44E9-B94D-7B25191BEA3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnouncementService.API", "AnnouncementService.API\AnnouncementService.API.csproj", "{8C1F7722-32CC-44E9-B94D-7B25191BEA3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Announcement.Infrastructure", "Announcement.Infrastructure\Announcement.Infrastructure.csproj", "{FB268E32-541E-47A5-B1D9-A5F70BD38A1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnouncementService.Infrastructure", "AnnouncementService.Infrastructure\AnnouncementService.Infrastructure.csproj", "{FB268E32-541E-47A5-B1D9-A5F70BD38A1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnnouncementService.App", "AnnouncementService.App\AnnouncementService.App.csproj", "{AC16A89F-6A5C-4AD2-8025-84CAF1345A58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +20,9 @@ Global
 		{FB268E32-541E-47A5-B1D9-A5F70BD38A1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB268E32-541E-47A5-B1D9-A5F70BD38A1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB268E32-541E-47A5-B1D9-A5F70BD38A1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC16A89F-6A5C-4AD2-8025-84CAF1345A58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC16A89F-6A5C-4AD2-8025-84CAF1345A58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC16A89F-6A5C-4AD2-8025-84CAF1345A58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC16A89F-6A5C-4AD2-8025-84CAF1345A58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
